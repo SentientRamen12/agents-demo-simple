@@ -1,12 +1,12 @@
 """
-LangGraph Agent using Anthropic Claude
+LangGraph Agent using Anthropic Claude & Google Gemini
 
-A LangGraph-based agent implementation using Anthropic Claude with tool support.
+A LangGraph-based agent implementation supporting multiple LLM providers.
 Uses LangGraph's create_react_agent for efficient agent workflows.
 
 Learning Week 1 Focus Areas:
 - LangGraph agent patterns
-- Anthropic Claude integration via LangChain
+- Multi-provider LLM integration (Anthropic Claude & Google Gemini)
 - Tool calling with LangGraph
 - ReAct (Reason + Act) agent workflow
 """
@@ -14,6 +14,7 @@ Learning Week 1 Focus Areas:
 from typing import Optional, List
 
 from langchain_anthropic import ChatAnthropic
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langgraph.prebuilt import create_react_agent
 from langchain_core.messages import HumanMessage, AIMessage, BaseMessage
 
@@ -23,18 +24,19 @@ from config import load_config
 
 class Agent:
     """
-    LangGraph Agent using Anthropic Claude
+    LangGraph Agent supporting Anthropic Claude & Google Gemini
     
     Uses LangGraph's create_react_agent for efficient tool-calling workflows.
     """
     
-    def __init__(self, api_key: Optional[str] = None, model: str = "claude-3-5-sonnet-20241022"):
+    def __init__(self, llm_provider: Optional[str] = None, api_key: Optional[str] = None, model: Optional[str] = None):
         """
-        Initialize the LangGraph agent with Anthropic Claude
+        Initialize the LangGraph agent with chosen LLM provider
         
         Args:
-            api_key: Anthropic API key (will use ANTHROPIC_API_KEY env var if not provided)
-            model: Claude model to use (default: claude-3-5-sonnet-20241022)
+            llm_provider: LLM provider ("anthropic" or "gemini", uses LLM_PROVIDER env var if not provided)
+            api_key: API key for the chosen provider (uses appropriate env var if not provided)
+            model: Model name (uses provider default if not provided)
         """
         # Message history for conversation context
         self.messages: List[BaseMessage] = []
@@ -42,8 +44,9 @@ class Agent:
         # System prompt for agent behavior
         self.system_prompt = self._create_system_prompt()
         
-        # TODO: Initialize Claude model with config
-        # TODO: Get tools from tools.py
+        # TODO: Get LLM provider from config (anthropic or gemini)
+        # TODO: Initialize appropriate LLM provider based on choice
+        # TODO: Get tools from tools.py  
         # TODO: Create LangGraph ReAct agent
         pass
     
@@ -71,6 +74,7 @@ class Agent:
             System prompt string
         """
         # TODO: Create system prompt with agent role and tool descriptions
+        # TODO: Include available tools (calculator, time, web search)
         return "You are a helpful AI assistant. (System prompt not implemented yet)"
     
     def get_available_tools(self) -> list:
@@ -106,5 +110,5 @@ async def initialize_agent() -> Agent:
     Returns:
         Ready-to-use Agent instance
     """
-    # TODO: Load config and create agent with API key
+    # TODO: Load config and create agent with LLM provider choice
     return Agent()
