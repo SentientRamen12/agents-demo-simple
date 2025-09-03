@@ -23,7 +23,9 @@ class Config:
         """Initialize configuration"""
         load_dotenv()
         self.anthropic_api_key = os.getenv("ANTHROPIC_API_KEY")
-        self.model = os.getenv("ANTHROPIC_MODEL", "claude-3-5-sonnet-20241022")
+        self.google_api_key = os.getenv("GOOGLE_API_KEY")
+        self.llm_provider = os.getenv("LLM_PROVIDER", "gemini")
+        self.model = os.getenv("MODEL", "gemini-1.5-pro")
         self.temperature = float(os.getenv("TEMPERATURE", "0.7"))
         self.max_tokens = int(os.getenv("MAX_TOKENS", "4000"))
         pass
@@ -35,16 +37,29 @@ class Config:
         Returns:
             True if configuration is valid
         """
-        return self.anthropic_api_key is not None
+        if self.llm_provider == "anthropic":
+            return self.anthropic_api_key is not None
+        elif self.llm_provider == "gemini":
+            return self.google_api_key is not None
+        else:
+            raise ValueError(f"Invalid LLM provider: {self.llm_provider}")
+        
+        return False
     
-    def get_anthropic_api_key(self) -> Optional[str]:
+    def get_api_key(self) -> Optional[str]:
         """
         Get Anthropic API key
         
         Returns:
             API key if available
         """
-        return self.anthropic_api_key
+        if self.llm_provider == "anthropic":
+            return self.anthropic_api_key
+        elif self.llm_provider == "gemini":
+            return self.google_api_key
+        else:
+            raise ValueError(f"Invalid LLM provider: {self.llm_provider}")
+        return None
 
 
 def load_config() -> Config:

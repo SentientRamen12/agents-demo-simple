@@ -47,9 +47,6 @@ async def main():
             response = await agent.send_message(user_input)
             print(f"Agent: {response}\n")
             
-            # Placeholder response for now
-            print(f"Agent: I received your message: '{user_input}' (not implemented yet)\n")
-            
         except KeyboardInterrupt:
             print("\n👋 Goodbye!")
             break
